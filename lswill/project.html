@@ -42,15 +42,15 @@
             this.dom = document.createElement('table');
             document.body.appendChild(this.dom);
             for (var i = 0; i < this.row; i++) {
-            var tr = document.createElement('tr');
-            var thisrowtd = [];
-            for (var j = 0; j < this.col; j++) {
-                var td = document.createElement('td');
-                tr.appendChild(td);
-                thisrowtd.push(td);
-            }
-            this.dom.appendChild(tr);
-            this.map.push(thisrowtd);
+                var tr = document.createElement('tr');
+                var thisrowtd = [];
+                for (var j = 0; j < this.col; j++) {
+                    var td = document.createElement('td');
+                    tr.appendChild(td);
+                    thisrowtd.push(td);
+                }
+                this.dom.appendChild(tr);
+                this.map.push(thisrowtd);
             }
         }
         var Direction = {
@@ -122,7 +122,7 @@
             game.addScore();
             game.gameVictory();
             } else {
-            this.bodyArr.pop();//删除尾巴
+            this.bodyArr.pop();
             }
             this.bodyArr.unshift(newhead);
         }
@@ -156,12 +156,9 @@
         Food.prototype.render = function(){
             mapObject.map[this.x][this.y].className = 'food';
         }
-        //生成一个食物
         Food.prototype.change = function() {
             this.x = parseInt(Math.random() * mapObject.col);
             this.y = parseInt(Math.random() * mapObject.row);
-
-            //判断食物是否在身上，如果在身上就继续执行这个方法
             for (var i = 0; i < snake.bodyArr.length; i++) {
             if (this.x === snake.bodyArr[i].x && this.y === snake.bodyArr[i].y) {
                 this.change();
@@ -195,6 +192,12 @@
             clearInterval(this.timer);
             alert('game over');
         }
+        Game.prototype.gameVictory = function() {
+            if (snake.bodyArr.length === mapObject.row * mapObject.col) {
+                clearInterval(this.timer);
+                alert('Victory');
+            }
+        }
         Game.prototype.render = function() {
             this.scoreDom.innerText = "Score: " + this.score;
         }
@@ -209,3 +212,4 @@
         </script>
     </body>
     </html>
+    
