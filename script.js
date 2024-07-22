@@ -1,88 +1,86 @@
 const gameBoard = document.getElementById('gameBoard');
-const boardWidth = gameBoard.clientWidth;
-const boardHeight = gameBoard.clientHeight;
+const boardSize = 20;
+const boardWidth = gameBoard.clientWidth / boardSize;
+const boardHeight = gameBoard.clientHeight / boardSize;
 
-let character = document.createElement('div');
-character.classList.add('character');
-gameBoard.appendChild(character);
+let snake = [{ x: 10, y: 10 }];
+let food = { x: Math.floor(Math.random() * boardWidth), y: Math.floor(Math.random() * boardHeight) };
+let direction = { x: 0, y: 0 };
+let gameInterval;
 
-let characterPosition = {
-    x: (boardWidth / 2) - 20,
-    y: boardHeight - 40
-};
+document.addEventListener('keydown', changeDirection);
 
-document.addEventListener('keydown', moveCharacter);
-
-function moveCharacter(e) {
-    switch(e.key) {
+function changeDirection(event) {
+    switch (event.key) {
         case 'ArrowUp':
-            if (characterPosition.y > 0) characterPosition.y -= 40;
+            if (direction.y === 0) direction = { x: 0, y: -1 };
             break;
         case 'ArrowDown':
-            if (characterPosition.y < boardHeight - 40) characterPosition.y += 40;
+            if (direction.y === 0) direction = { x: 0, y: 1 };
             break;
         case 'ArrowLeft':
-            if (characterPosition.x > 0) characterPosition.x -= 40;
+            if (direction.x === 0) direction = { x: -1, y: 0 };
             break;
         case 'ArrowRight':
-            if (characterPosition.x < boardWidth - 40) characterPosition.x += 40;
+            if (direction.x === 0) direction = { x: 1, y: 0 };
             break;
     }
-    updateCharacterPosition();
 }
 
-function updateCharacterPosition() {
-    character.style.left = `${characterPosition.x}px`;
-    character.style.bottom = `${characterPosition.y}px`;
-}
+function updateSnake() {
+    const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+    snake.unshift(head);
 
-// Obstacles
-function createObstacle() {
-    let obstacle = document.createElement('div');
-    obstacle.classList.add('obstacle');
-    obstacle.style.left = `${Math.random() * (boardWidth - 60)}px`;
-    gameBoard.appendChild(obstacle);
-
-    let obstaclePosition = {
-        x: parseFloat(obstacle.style.left),
-        y: 0
-    };
-
-    function moveObstacle() {
-        obstaclePosition.y += 2;
-        if (obstaclePosition.y > boardHeight) {
-            obstacle.remove();
-            clearInterval(obstacleInterval);
-        } else {
-            obstacle.style.top = `${obstaclePosition.y}px`;
-            checkCollision(obstaclePosition);
-        }
+    if (head.x === food.x && head.y === food.y) {
+        food = { x: Math.floor(Math.random() * boardWidth), y: Math.floor(Math.random() * boardHeight) };
+    } else {
+        snake.pop();
     }
 
-    let obstacleInterval = setInterval(moveObstacle, 20);
-}
-
-function checkCollision(obstaclePosition) {
-    if (
-        characterPosition.x < obstaclePosition.x + 60 &&
-        characterPosition.x + 40 > obstaclePosition.x &&
-        characterPosition.y < obstaclePosition.y + 40 &&
-        characterPosition.y + 40 > obstaclePosition.y
-    ) {
+    if (head.x < 0 || head.x >= boardWidth || head.y < 0 || head.y >= boardHeight || isCollision()) {
         alert('Game Over!');
+        clearInterval(gameInterval);
         resetGame();
     }
 }
 
-function resetGame() {
-    characterPosition = {
-        x: (boardWidth / 2) - 20,
-        y: boardHeight - 40
-    };
-    updateCharacterPosition();
-    let obstacles = document.querySelectorAll('.obstacle');
-    obstacles.forEach(obstacle => obstacle.remove());
+function isCollision() {
+    for (let i = 1; i < snake.length; i++) {
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
+            return true;
+        }
+    }
+    return false;
 }
 
-setInterval(createObstacle, 1000);
-updateCharacterPosition();
+function drawBoard() {
+    gameBoard.innerHTML = '';
+
+    snake.forEach(segment => {
+        const snakeElement = document.createElement('div');
+        snakeElement.style.left = `${segment.x * boardSize}px`;
+        snakeElement.style.top = `${segment.y * boardSize}px`;
+        snakeElement.classList.add('snake');
+        gameBoard.appendChild(snakeElement);
+    });
+
+    const foodElement = document.createElement('div');
+    foodElement.style.left = `${food.x * boardSize}px`;
+    foodElement.style.top = `${food.y * boardSize}px`;
+    foodElement.classList.add('food');
+    gameBoard.appendChild(foodElement);
+}
+
+function resetGame() {
+    snake = [{ x: 10, y: 10 }];
+    direction = { x: 0, y: 0 };
+    food = { x: Math.floor(Math.random() * boardWidth), y: Math.floor(Math.random() * boardHeight) };
+    gameInterval = setInterval(gameLoop, 200);
+}
+
+function gameLoop() {
+    updateSnake();
+    drawBoard();
+}
+
+resetGame();
