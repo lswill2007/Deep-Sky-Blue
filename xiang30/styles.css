@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #002b5c;
+    color: white;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-bottom: 20px;
+}
+
+.player, .turn {
+    background-color: #000080;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.turn {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.jeopardy-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    width: 100vw;
+    height: 80vh;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.category {
+    background-color: #000080;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border: 2px solid black;
+    box-sizing: border-box;
+}
+
+.question {
+    background-color: #1e90ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid black;
+    box-sizing: border-box;
+    transition: transform 0.3s, height 0.3s, width 0.3s;
+}
+
+.question.expanded {
+    z-index: 1;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    background-color: white;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.question.expanded input,
+.question.expanded button {
+    margin-top: 10px;
+}
+
+.question:hover {
+    background-color: #87ceeb;
+}
+
