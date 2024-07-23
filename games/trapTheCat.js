@@ -138,7 +138,7 @@ function resetGame() {
 // Function to initialize the game with 10 random obstacles
 function blockini() {
     let addedObstacles = 0;
-    while (addedObstacles < 30) {
+    while (addedObstacles < 20) {
         const randomRow = Math.floor(Math.random() * boardSize);
         const randomCol = Math.floor(Math.random() * boardSize);
 

@@ -1,2 +1,2 @@
 # Deep-Sky-Blue
-Jacob
+Provides various web games.
