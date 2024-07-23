@@ -87,4 +87,7 @@ body {
 .question:hover {
     background-color: #87ceeb;
 }
+.question.answered {
+    background-color: #0e4072;
+}
 
