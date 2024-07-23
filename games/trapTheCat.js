@@ -1,10 +1,8 @@
-
 const gameBoard = document.getElementById('gameBoard');
 const boardSize = 11;
 let catPosition = { x: 5, y: 5 };
 let obstacles = [];
 
-// Initialize the game board
 for (let row = 0; row < boardSize; row++) {
     for (let col = 0; col < boardSize; col++) {
         const cell = document.createElement('div');
@@ -16,10 +14,9 @@ for (let row = 0; row < boardSize; row++) {
     }
 }
 
-// Function to add obstacle
 function addObstacle(row, col) {
     if (row === catPosition.y && col === catPosition.x) return;
-    
+
     const cells = document.getElementsByClassName('cell');
     let cell = null;
     for (let i = 0; i < cells.length; i++) {
@@ -28,7 +25,7 @@ function addObstacle(row, col) {
             break;
         }
     }
-    
+
     if (!cell.classList.contains('obstacle')) {
         cell.classList.add('obstacle');
         obstacles.push({ x: col, y: row });
@@ -36,60 +33,67 @@ function addObstacle(row, col) {
     }
 }
 
-// Function to move the cat
-function moveCat() {
+function countAdjacentObstacles(x, y) {
     const directions = [
-        { x: 0, y: -1 },
-        { x: 0, y: 1 },
-        { x: 1, y: -1 },
-        { x: 1, y: 0 },
-        { x: 1, y: 1},
-        { x: -1, y: 1 },
-        { x: -1, y: 0 },
-        { x: -1, y: -1},
+        { x: 0, y: -1 }, { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 },
+        { x: 0, y: 1 }, { x: -1, y: 1 }, { x: -1, y: 0 }, { x: -1, y: -1 }
     ];
-    let cntmin = 8;
+    let count = 0;
+
     for (let dir of directions) {
-        let decideX = 0;
-        let decideY = 0;
-        let newX = catPosition.x + dir.x;
-        let newY = catPosition.y + dir.y;
+        const newX = x + dir.x;
+        const newY = y + dir.y;
         if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize &&
-            !obstacles.some(obstacle => obstacle.x === newX && obstacle.y === newY)) {
-                if(countBlockAdj(newX, newY) < cntmin){
-                    decideX = newX;
-                    decideY = newY;
-                    cntmin = countBlockAdj(newX, newY);
-            }
+            obstacles.some(obstacle => obstacle.x === newX && obstacle.y === newY)) {
+            count++;
         }
-        updateCatPosition(decideX, decideY);
-        return;
     }
-    alert('You trapped the cat!');
+
+    return count;
 }
-function countBlockAdj(x,y){
+
+function moveCat() {
+    const bestMove = findBestMove(catPosition.x, catPosition.y);
+    if (bestMove) {
+        updateCatPosition(bestMove.x, bestMove.y);
+    } else {
+        alert('You trapped the cat!');
+    }
+}
+
+function findBestMove(startX, startY) {
     const directions = [
-        { x: 0, y: -1 },
-        { x: 0, y: 1 },
-        { x: 1, y: -1 },
-        { x: 1, y: 0 },
-        { x: 1, y: 1},
-        { x: -1, y: 1 },
-        { x: -1, y: 0 },
-        { x: -1, y: -1},
+        { x: 0, y: -1 }, { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 },
+        { x: 0, y: 1 }, { x: -1, y: 1 }, { x: -1, y: 0 }, { x: -1, y: -1 }
     ];
-    let cnt = 0;
-    for(let dir of directions){
-        let newX = x + dir.x;
-        let newY = y + dir.y;
-        if(newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize){
-            if(obstacles.some(obstacle => obstacle.x === newX && obstacle.y === newY)){
-                cnt++;
+
+    let stack = [{ x: startX, y: startY, path: [] }];
+    let visited = new Set();
+    visited.add(`${startX},${startY}`);
+
+    while (stack.length > 0) {
+        let { x, y, path } = stack.pop();
+
+        if (x === 0 || x === boardSize - 1 || y === 0 || y === boardSize - 1) {
+            return path.length > 0 ? path[0] : { x, y };
+        }
+
+        for (let dir of directions) {
+            const newX = x + dir.x;
+            const newY = y + dir.y;
+            if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize &&
+                !obstacles.some(obstacle => obstacle.x === newX && obstacle.y === newY) &&
+                !visited.has(`${newX},${newY}`)) {
+                
+                stack.push({ x: newX, y: newY, path: [...path, { x: newX, y: newY }] });
+                visited.add(`${newX},${newY}`);
             }
         }
     }
-    return cnt;
+
+    return null;
 }
+
 function updateCatPosition(newX, newY) {
     const cells = document.getElementsByClassName('cell');
     let oldCatCell = null;
@@ -131,10 +135,10 @@ function resetGame() {
     blockini();
 }
 
-// Function to initialize the game with 8 random obstacles
+// Function to initialize the game with 10 random obstacles
 function blockini() {
     let addedObstacles = 0;
-    while (addedObstacles < 8) {
+    while (addedObstacles < 30) {
         const randomRow = Math.floor(Math.random() * boardSize);
         const randomCol = Math.floor(Math.random() * boardSize);
 
@@ -157,6 +161,5 @@ function blockini() {
     }
 }
 
-// Set initial cat position and fill the board with initial obstacles
 updateCatPosition(catPosition.x, catPosition.y);
 blockini();
