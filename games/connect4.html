@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connect Four Board</title>
+<style>
+  /* Styles for the wrapper */
+  .board-wrapper {
+    width: 425px; /* Adjust the width as needed */
+    margin: auto; /* Center the board horizontally */
+    margin-top: 20px; /* Add some top margin */
+    background-color: #f0f0f0; /* Light background color for wrapper */
+    padding: 20px; /* Padding around the board */
+    border-radius: 10px; /* Rounded corners for the wrapper */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle depth */
+    margin-top: 90px;
+  }
+
+  .message {
+    font-weight: bold;
+    font-family: sans-serif;
+    text-align: center;
+    font-size: 20px;
+  }
+
+  /* Styles for the board */
+  .board {
+    display: grid;
+    grid-template-columns: repeat(7, 60px); /* 7 columns, each 50px wide */
+    grid-template-rows: repeat(6, 60px);   /* 6 rows, each 50px high */
+    gap: 2px;   /* Gap between cells */
+    background-color: blue; /* Board background color */
+  }
+  
+  /* Styles for each cell (slot) */
+  .slot {
+    width: 40px;   /* Cell width */
+    height: 40px;  /* Cell height */
+    background-color: white; /* Default cell color */
+    border: 2px solid black; /* Border around each cell */
+    border-radius: 50%; /* Rounded border to make cells circular */
+    margin-top: 23%;
+    margin-left: 10%;
+  }
+</style>
+</head>
+<body>
+  <div class="board-wrapper">
+    <div class="board">
+      <!-- Generate 42 slots (7 columns x 6 rows) -->
+      <!-- You can use JavaScript to generate these dynamically if needed -->
+      <div class="row">
+
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        
+  
+      </div>
+      
+      <!-- Repeat for each row -->
+      <div class="row">
+
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        
+  
+      </div>
+      
+      <!-- Repeat for all 6 rows -->
+      <div class="row">
+
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+       
+  
+      </div>
+      <div class="row">
+
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        
+  
+      </div>
+
+      <div class="row">
+
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+ 
+  
+      </div>
+      <div class="row">
+
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+ 
+  
+      </div>
+
+      <div class="row">
+
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="slot"></div>
+ 
+  
+      </div>
+
+      
+      <!-- You can continue this pattern for all 42 slots -->
+    </div>
+  </div>
+
+  <div class="message" id="message">Drop a token to start!</div>
+
+  <script>
+        // JavaScript for Connect Four game
+
+    // Constants
+    const ROWS = 6;
+    const COLS = 7;
+    const PLAYER1 = 'red';
+    const PLAYER2 = 'yellow';
+
+    // Variables
+    let currentPlayer = PLAYER1;
+    let board = [];
+    let gameOver = false;
+    let col = COLS - 1
+
+    for(let slot of document.getElementsByClassName("slot")) {
+        slot.addEventListener('click', dropToken, false);
+    }
+    // Initialize board array
+    for (let row = 0; row < ROWS; row++) {
+      board[row] = [];
+      for (let col = 0; col < COLS; col++) {
+        board[row][col] = null; // null indicates empty slot
+      }
+    }
+
+    // Function to handle a player's move
+    function dropToken(event) {
+    if (gameOver) return; // If game over, do nothing
+    let colDiv = this.parentNode;
+    let cols = [...colDiv.parentNode.children];
+    let col = cols.indexOf(colDiv);
+
+    // Find the lowest empty row in the selected column
+    let lowestRow = findLowestEmptyRow(col);
+    if (lowestRow === -1) return; // Column is full
+
+    // Update the board and display
+    board[lowestRow][col] = currentPlayer;
+    updateBoard();
+
+    // Check for win using lowestRow (the actual row where the token lands)
+    if (checkForWin(lowestRow, col)) {
+        gameOver = true;
+        document.getElementById('message').textContent = `${currentPlayer.toUpperCase()} wins!`;
+        return;
+    }
+
+    // Check for draw
+    if (checkForDraw()) {
+        gameOver = true;
+        document.getElementById('message').textContent = "It's a draw!";
+        return;
+    }
+
+    // Switch players
+    currentPlayer = (currentPlayer === PLAYER1) ? PLAYER2 : PLAYER1;
+    document.getElementById('message').textContent = `Player ${currentPlayer.toUpperCase()}'s turn`;
+}
+
+
+    // Function to find the lowest empty row in a column
+    function findLowestEmptyRow(col) {
+      for (let rows = ROWS - 1; rows >= 0; rows--) {
+        if (board[rows][col] === null) {
+          return rows;
+        }
+      }
+      return -1; // Column is full
+    }
+
+    // Function to update the visual representation of the board
+    function updateBoard() {
+      const slots = document.getElementsByClassName('slot');
+      let index = 0;
+      for (let col = 0; col < COLS; col++) {
+        for (let row = 0; row < ROWS; row++) {
+          if (board[row][col] === null) {
+            slots[index].style.backgroundColor = 'white';
+          } else {
+            slots[index].style.backgroundColor = board[row][col];
+          }
+          index++;
+        }
+      }
+    }
+
+    // Function to check for a win condition
+    function checkForWin(row, col) {
+      // Check horizontally
+      let count = 1;
+      // Check left
+      for (let c = col - 1; c >= 0 && board[row][c] === currentPlayer; c--) {
+        count++
+    }
+      // Check right
+      for (let c = col + 1; c < COLS && board[row][c] === currentPlayer; c++) {
+        count++
+    }
+      if (count >= 4) {
+        return true
+    }
+
+    count = 1; // Start with 1 for the token just placed
+// Check below
+for (let r = row + 1; r < ROWS && board[r][col] === currentPlayer; r++) {
+    count++;
+}
+// Check above
+for (let r = row - 1; r >= 0 && board[r][col] === currentPlayer; r--) {
+    count++;
+}
+if (count >= 4) {
+    return true;
+}
+
+      // Check diagonally (top-left to bottom-right)
+      count = 0;
+      // Check top-left
+      for (let r = row - 1, c = col - 1; r >= 0 && c >= 0 && board[r][c] === currentPlayer; r--, c--) {
+        count++;
+      }
+      // Check bottom-right
+      for (let r = row + 1, c = col + 1; r < ROWS && c < COLS && board[r][c] === currentPlayer; r++, c++) {
+        count++;
+      }
+      if (count >= 4) {
+        return true
+    }
+
+      // Check diagonally (top-right to bottom-left)
+      count = 1;
+      // Check top-right
+      for (let r = row - 1, c = col + 1; r >= 0 && c < COLS && board[r][c] === currentPlayer; r--, c++) {
+        count++;
+      }
+      // Check bottom-left
+      for (let r = row + 1, c = col - 1; r < ROWS && c >= 0 && board[r][c] === currentPlayer; r++, c--) {
+        count++;
+      }
+      if (count >= 4) {
+        return true
+    }
+
+      return false; // No win condition
+    }
+
+    // Function to check for a draw condition
+    function checkForDraw() {
+      for (let col = 0; col < COLS; col++) {
+        if (board[0][col] === null) {
+          return false; // Still an empty slot available
+        }
+      }
+      {return true
+     
+    } // All slots are filled
+ }
+  </script>
+</body>
+</html>
