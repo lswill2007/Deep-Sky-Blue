@@ -11,7 +11,7 @@
     margin: auto; /* Center the board horizontally */
     margin-top: 20px; /* Add some top margin */
     background-color: #f0f0f0; /* Light background color for wrapper */
-    padding: 5px; /* Padding around the board */
+    padding: 20px; /* Padding around the board */
     border-radius: 10px; /* Rounded corners for the wrapper */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle depth */
     margin-top: 90px;
@@ -169,38 +169,38 @@
 
     // Function to handle a player's move
     function dropToken(event) {
-        if (gameOver) return; // If game over, do nothing
-        let colDiv = this.parentNode
-        let cols = [...colDiv.parentNode.children];
-        let col = cols.indexOf(colDiv);
-        let row = [...this.parentNode.children].indexOf(this);
+    if (gameOver) return; // If game over, do nothing
+    let colDiv = this.parentNode;
+    let cols = [...colDiv.parentNode.children];
+    let col = cols.indexOf(colDiv);
 
-      // Find the lowest empty row in the selected column
-      let lowestRow = findLowestEmptyRow(col);
-      if (lowestRow === -1) return; // Column is full
+    // Find the lowest empty row in the selected column
+    let lowestRow = findLowestEmptyRow(col);
+    if (lowestRow === -1) return; // Column is full
 
-      // Update the board and display
-      board[lowestRow][col] = currentPlayer;
-      updateBoard();
+    // Update the board and display
+    board[lowestRow][col] = currentPlayer;
+    updateBoard();
 
-      // Check for win
-      if (checkForWin(row, col)) {
+    // Check for win using lowestRow (the actual row where the token lands)
+    if (checkForWin(lowestRow, col)) {
         gameOver = true;
         document.getElementById('message').textContent = `${currentPlayer.toUpperCase()} wins!`;
         return;
-      }
+    }
 
-      // Check for draw
-      if (checkForDraw()) {
+    // Check for draw
+    if (checkForDraw()) {
         gameOver = true;
         document.getElementById('message').textContent = "It's a draw!";
         return;
-      }
-
-      // Switch players
-      currentPlayer = (currentPlayer === PLAYER1) ? PLAYER2 : PLAYER1;
-      document.getElementById('message').textContent = `Player ${currentPlayer.toUpperCase()}'s turn`;
     }
+
+    // Switch players
+    currentPlayer = (currentPlayer === PLAYER1) ? PLAYER2 : PLAYER1;
+    document.getElementById('message').textContent = `Player ${currentPlayer.toUpperCase()}'s turn`;
+}
+
 
     // Function to find the lowest empty row in a column
     function findLowestEmptyRow(col) {
@@ -244,15 +244,18 @@
         return true
     }
 
-      // Check vertically
-      count = 0;
-      // Check below
-      for (let r = row + 1; r < ROWS && board[r][col] === currentPlayer; r++) {
-        count++;
-    }
-      if (count >= 4) {
-        return true
-    }
+    count = 1; // Start with 1 for the token just placed
+// Check below
+for (let r = row + 1; r < ROWS && board[r][col] === currentPlayer; r++) {
+    count++;
+}
+// Check above
+for (let r = row - 1; r >= 0 && board[r][col] === currentPlayer; r--) {
+    count++;
+}
+if (count >= 4) {
+    return true;
+}
 
       // Check diagonally (top-left to bottom-right)
       count = 0;
@@ -269,7 +272,7 @@
     }
 
       // Check diagonally (top-right to bottom-left)
-      count = 0;
+      count = 1;
       // Check top-right
       for (let r = row - 1, c = col + 1; r >= 0 && c < COLS && board[r][c] === currentPlayer; r--, c++) {
         count++;
