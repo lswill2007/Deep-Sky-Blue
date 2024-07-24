@@ -36,6 +36,8 @@ function submitAnswer() {
     if (answer === correctAnswer) {
         const scoreSpan = document.getElementById(`score${currentPlayer}`);
         scoreSpan.textContent = parseInt(scoreSpan.textContent) + value;
+    } else {
+        alert(`${correctAnswer} is the right answer!`);
     }
 
     currentQuestion.classList.add('answered');
