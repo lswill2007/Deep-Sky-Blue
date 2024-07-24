@@ -1,97 +1,286 @@
-const size = 4;
-const board = document.getElementById('gameBoard');
-let grid = Array(size).fill().map(() => Array(size).fill(0));
+var game = {
+            data: [],  
+            score: 0, 
+            gamerunning: 1, 
+            gameover: 0, 
+            status: 1,
 
-document.addEventListener('keydown', handleKeyPress);
+            start: function () {
+                this.data = [
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]
+                ];
+                this.score = 0;
+                this.status = this.gamerunning;
+                this.randomNum();
+                this.randomNum();
+                this.randomNum();
+                this.randomNum();
+                this.randomNum();
+                this.dataView();
+            },
+            randomNum: function () {
+                while (true) {
+                    var r = Math.floor(Math.random() * 4);   //row
+                    var c = Math.floor(Math.random() * 4);   //column
+                    if (this.data[r][c] == 0) {
+                        var num = Math.random() > 0.2 ? 2 : 4; 
+                        this.data[r][c] = num;
+                        break;
+ 
+                    }
+ 
+                }
+            },
+            dataView: function () {
+                for (var r = 0; r < 4; r++) {  
+                    for (var c = 0; c < 4; c++) {
+                        var div = document.getElementById("n" + r + c); 
+                        if (this.data[r][c] != 0) {
+                            div.innerHTML = this.data[r][c]; 
+                            div.className = "cell n" + this.data[r][c];
+                        } else {
+                            div.innerHTML = ""; 
+                            div.className = "cell";
+                        }
+                    }
+                }
+                document.getElementById("score01").innerHTML = this.score;
+                if (this.status == this.gameover) { 
+                    document.getElementById("gameover").style.display = "block";
+                    document.getElementById("score02").innerHTML = this.score;
+                } else {  
+                    document.getElementById("gameover").style.display = "none";
+                }
+            },
+            isgameove: function () {
+                for (var r = 0; r < 4; r++) {
+                    for (var c = 0; c < 4; c++) {
+                        if (this.data[r][c] == 0) { 
+                            return false;
+                        }
+                        if (c < 3) {  
+                            if (this.data[r][c] == this.data[r][c + 1]) {
+                                return false;
+                            }
+                        }
+                        if (r < 3) {
+                            if (this.data[r][c] == this.data[r + 1][c]) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            },
+            moveLeft: function () {
+                var before = String(this.data);
+                for (var r = 0; r < 4; r++) {
+                    this.moveLeftinRow(r);
+                }
+                var after = String(this.data);
 
-function initBoard() {
-    addRandomTile();
-    addRandomTile();
-    drawBoard();
-}
+                if (before != after) {
+                    this.randomNum();
+                    if (this.isgameove()) { 
+                        this.status = this.gameover;
+                    }
+                    this.dataView();
+                }
+ 
+            },
+            moveLeftinRow: function (r) {
+                for (var c = 0; c < 3; c++) {
+                    var nextc = this.moveLeftNum(r, c);
+                    if (nextc != -1) {
+                        if (this.data[r][c] == 0) {  
+                            this.data[r][c] = this.data[r][nextc];
+                            this.data[r][nextc] = 0;
+                            c--;
+ 
+                        }
+                        else if (this.data[r][c] == this.data[r][nextc]) {
+                            this.data[r][c] *= 2;
+                            this.data[r][nextc] = 0;
+                            this.score += this.data[r][c];
+ 
+                        }
+                    } else {
+                        break;
+                    }
+                }
+ 
+            },
+            moveLeftNum: function (r, c) {
+                for (var i = c + 1; i < 4; i++) {
+                    if (this.data[r][i] != 0) {
+                        return i;
+                    }
+                }
+                return -1;
+            },
+            moveRight: function () {
+                var before = String(this.data);
+                for (var r = 0; r < 4; r++) {
+                    this.moveRightinRow(r);
+                }
+                var after = String(this.data);
+                if (before != after) {
+                    this.randomNum();
+                    if (this.isgameove()) { 
+                        this.status = this.gameover;
+                    }
+                    this.dataView();
+                }
+ 
+            },
+            moveRightinRow: function (r) {
+                for (var c = 3; c >= 0; c--) {
+                    var nextc = this.moveRightNum(r, c);
+                    if (nextc != -1) {
+                        if (this.data[r][c] == 0) {
+                            this.data[r][c] = this.data[r][nextc];
+                            this.data[r][nextc] = 0;
+                            c++;
+ 
+                        }
+                        else if (this.data[r][c] == this.data[r][nextc]) {
+                            this.data[r][c] *= 2;
+                            this.data[r][nextc] = 0;
+                            this.score += this.data[r][c];
+ 
+                        }
+                    } else {
+                        break;
+                    }
+                }
+ 
+            },
+            moveRightNum: function (r, c) {
+                for (var i = c - 1; i >= 0; i--) {
+                    if (this.data[r][i] != 0) {
+                        return i;
+                    }
+                }
+                return -1;
+            },
+            moveUp: function () {
 
-function drawBoard() {
-    board.innerHTML = '';
-    grid.forEach(row => {
-        row.forEach(value => {
-            const tile = document.createElement('div');
-            tile.classList.add('tile');
-            tile.textContent = value === 0 ? '' : value;
-            tile.style.backgroundColor = getTileColor(value);
-            board.appendChild(tile);
-        });
-    });
-}
+                var before = String(this.data);
+                for (var c = 0; c < 4; c++) {
+                    this.moveUpinRow(c);
+                }
+                var after = String(this.data);
+                if (before != after) {
+                    this.randomNum();
+                    if (this.isgameove()) {
+                        this.status = this.gameover;
+                    }
+                    this.dataView();
+                }
+ 
+            },
 
-function getTileColor(value) {
-    // Define colors based on tile value
-    // For simplicity, you can adjust colors as needed
-    switch (value) {
-        case 0: return '#ccc0b3';
-        case 2: return '#eee4da';
-        case 4: return '#ede0c8';
-        case 8: return '#f2b179';
-        case 16: return '#f59563';
-        case 32: return '#f67c5f';
-        case 64: return '#f65e3b';
-        case 128: return '#edcf72';
-        case 256: return '#edcc61';
-        case 512: return '#edc850';
-        case 1024: return '#edc53f';
-        case 2048: return '#edc22e';
-        default: return '#3c3a32';
-    }
-}
+            moveUpinRow: function (c) {
+                for (var r = 0; r < 3; r++) {
 
-function addRandomTile() {
-    let emptyTiles = [];
-    grid.forEach((row, rIndex) => {
-        row.forEach((tile, cIndex) => {
-            if (tile === 0) emptyTiles.push({ row: rIndex, col: cIndex });
-        });
-    });
-    if (emptyTiles.length > 0) {
-        const { row, col } = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
-        grid[row][col] = Math.random() < 0.9 ? 2 : 4;
-    }
-}
+                    var nextr = this.moveUpNum(r, c);
+                    if (nextr != -1) {
+                        if (this.data[r][c] == 0) { 
+                            this.data[r][c] = this.data[nextr][c];
+                            this.data[nextr][c] = 0;
+                            r--;
+ 
+                        }
+                        else if (this.data[r][c] == this.data[nextr][c]) {
+                            this.data[r][c] *= 2;
+                            this.data[nextr][c] = 0;
+                            this.score += this.data[r][c];
+ 
+                        }
+                    } else {
+                        break;
+                    }
+                }
+ 
+            },
+            moveUpNum: function (r, c) {	
+                for (var i = r + 1; i < 4; i++) {
+                    if (this.data[i][c] != 0) {
+                        return i;
+                    }
+                }
+                return -1;
+            },
+            moveDown: function () {
+                var before = String(this.data);
+                for (var c = 0; c < 4; c++) {
+                    this.moveDowninRow(c);
+                }
+                var after = String(this.data);
+                if (before != after) {
+                    this.randomNum();
+                    if (this.isgameove()) { 
+                        this.status = this.gameover;
+                    }
+                    this.dataView();
+                }
+ 
+            },
+            moveDowninRow: function (c) {
+                for (var r = 3; r >= 0; r--) {
+                    var nextr = this.moveDownNum(r, c);
+                    if (nextr != -1) {
+                        if (this.data[r][c] == 0) {  
+                            this.data[r][c] = this.data[nextr][c];
+                            this.data[nextr][c] = 0;
 
-function handleKeyPress(event) {
-    let moved = false;
-    switch (event.key) {
-        case 'ArrowUp': moved = moveUp(); break;
-        case 'ArrowDown': moved = moveDown(); break;
-        case 'ArrowLeft': moved = moveLeft(); break;
-        case 'ArrowRight': moved = moveRight(); break;
-    }
-    if (moved) {
-        addRandomTile();
-        drawBoard();
-    }
-}
-
-function moveUp() {
-    // Implement the logic to move tiles up
-    // Add code to merge tiles and update grid
-    return true; // Return true if any tile was moved
-}
-
-function moveDown() {
-    // Implement the logic to move tiles down
-    // Add code to merge tiles and update grid
-    return true; // Return true if any tile was moved
-}
-
-function moveLeft() {
-    // Implement the logic to move tiles left
-    // Add code to merge tiles and update grid
-    return true; // Return true if any tile was moved
-}
-
-function moveRight() {
-    // Implement the logic to move tiles right
-    // Add code to merge tiles and update grid
-    return true; // Return true if any tile was moved
-}
-
-initBoard();
+                            r++;
+ 
+                        }
+                        else if (this.data[r][c] == this.data[nextr][c]) {
+                            this.data[r][c] *= 2;
+                            this.data[nextr][c] = 0;
+                            this.score += this.data[r][c];
+ 
+                        }
+                    } else {
+                        break;
+                    }
+                }
+ 
+            },
+            moveDownNum: function (r, c) {	
+                for (var i = r - 1; i >= 0; i--) {
+                    if (this.data[i][c] != 0) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+ 
+        }
+ 
+        document.onkeydown = function () {
+            if (event.keyCode == 37) {  
+                game.moveLeft();
+            } else if (event.keyCode == 38) {  
+                game.moveUp();
+            } else if (event.keyCode == 39) { 
+                game.moveRight();
+            } else if (event.keyCode == 40) {  
+                game.moveDown();
+            }
+ 
+        }
+ 
+        game.start();
+        console.log(game.data)
+        console.log(game.score)
+ 
+        function typeonce() {
+            document.getElementById("gameover").style.display = "none";
+            window.location.href = "2048.html";
+        }
