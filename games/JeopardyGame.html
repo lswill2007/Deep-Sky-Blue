@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeopardy Game</title>
+    <link rel="stylesheet" href="JeopardyGame.css">
+</head>
+<body>
+    <div class="header">
+        <div class="player" id="player1">
+            <h2>Player 1</h2>
+            <p>Score: <span id="score1">0</span></p>
+        </div>
+        <div class="player" id="player2">
+            <h2>Player 2</h2>
+            <p>Score: <span id="score2">0</span></p>
+        </div>
+        <div class="turn" id="turnIndicator">Player 1's Turn</div>
+    </div>
+    <div class="jeopardy-grid">
+        <div class="category">WORLD HISTORY</div>
+        <div class="category">SCIENCE</div>
+        <div class="category">ENGLISH</div>
+        <div class="category">GEOGRAPHY</div>
+        <div class="category">MATH</div>
+        <div class="category">ART</div>
+
+        <div class="question" data-question="What is the capital of France?" data-answer="Paris" data-value="100">$100</div>
+        <div class="question" data-question="What is the speed of light?" data-answer="299792458 m/s" data-value="100">$100</div>
+        <div class="question" data-question="Who wrote 'Hamlet'?" data-answer="William Shakespeare" data-value="100">$100</div>
+        <div class="question" data-question="What is the largest desert in the world?" data-answer="Sahara Desert" data-value="100">$100</div>
+        <div class="question" data-question="What is 2 + 2?" data-answer="4" data-value="100">$100</div>
+        <div class="question" data-question="Who painted the Mona Lisa?" data-answer="Leonardo da Vinci" data-value="100">$100</div>
+
+        <div class="question" data-question="When did World War II end?" data-answer="1945" data-value="200">$200</div>
+        <div class="question" data-question="What is H2O?" data-answer="Water" data-value="200">$200</div>
+        <div class="question" data-question="Who wrote '1984'?" data-answer="George Orwell" data-value="200">$200</div>
+        <div class="question" data-question="What is the capital of Australia?" data-answer="Canberra" data-value="200">$200</div>
+        <div class="question" data-question="What is the square root of 16?" data-answer="4" data-value="200">$200</div>
+        <div class="question" data-question="What is the primary color of an orange?" data-answer="Orange" data-value="200">$200</div>
+
+        <div class="question" data-question="Who discovered America?" data-answer="Christopher Columbus" data-value="300">$300</div>
+        <div class="question" data-question="What is the chemical symbol for gold?" data-answer="Au" data-value="300">$300</div>
+        <div class="question" data-question="Who wrote 'Pride and Prejudice'?" data-answer="Jane Austen" data-value="300">$300</div>
+        <div class="question" data-question="What is the smallest country in the world?" data-answer="Vatican City" data-value="300">$300</div>
+        <div class="question" data-question="What is 9 x 9?" data-answer="81" data-value="300">$300</div>
+        <div class="question" data-question="Who painted 'Starry Night'?" data-answer="Vincent van Gogh" data-value="300">$300</div>
+
+        <div class="question" data-question="When was the Declaration of Independence signed?" data-answer="1776" data-value="400">$400</div>
+        <div class="question" data-question="What is the chemical formula for salt?" data-answer="NaCl" data-value="400">$400</div>
+        <div class="question" data-question="Who wrote 'To Kill a Mockingbird'?" data-answer="Harper Lee" data-value="400">$400</div>
+        <div class="question" data-question="What is the longest river in the world?" data-answer="Nile River" data-value="400">$400</div>
+        <div class="question" data-question="What is the value of pi?" data-answer="3.14159" data-value="400">$400</div>
+        <div class="question" data-question="Who sculpted 'David'?" data-answer="Michelangelo" data-value="400">$400</div>
+
+        <div class="question" data-question="Who was the first President of the United States?" data-answer="George Washington" data-value="500">$500</div>
+        <div class="question" data-question="What is the powerhouse of the cell?" data-answer="Mitochondria" data-value="500">$500</div>
+        <div class="question" data-question="Who wrote 'The Odyssey'?" data-answer="Homer" data-value="500">$500</div>
+        <div class="question" data-question="What is the capital of Japan?" data-answer="Tokyo" data-value="500">$500</div>
+        <div class="question" data-question="What is 100 divided by 4?" data-answer="25" data-value="500">$500</div>
+        <div class="question" data-question="What is the color of the sky?" data-answer="Blue" data-value="500">$500</div>
+    </div>
+
+    <script src="JeopardyGame.js"></script>
+</body>
+</html>
+
