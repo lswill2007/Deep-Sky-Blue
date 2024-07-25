@@ -15,12 +15,12 @@ for (let row = 0; row < boardSize; row++) {
 }
 
 function addObstacle(row, col) {
-    if (row === catPosition.y && col === catPosition.x) return;
+    if (row === catPosition.y && col === catPosition.x) return;//do nothing if the cat is clicked
 
     const cells = document.getElementsByClassName('cell');
     let cell = null;
     for (let i = 0; i < cells.length; i++) {
-        if (parseInt(cells[i].dataset.row) === row && parseInt(cells[i].dataset.col) === col) {
+        if (Number(cells[i].dataset.row) === row && Number(cells[i].dataset.col) === col) {
             cell = cells[i];
             break;
         }
