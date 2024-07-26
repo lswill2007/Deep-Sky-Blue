@@ -258,7 +258,7 @@ if (count >= 4) {
 }
 
       // Check diagonally (top-left to bottom-right)
-      count = 0;
+      count = 1;
       // Check top-left
       for (let r = row - 1, c = col - 1; r >= 0 && c >= 0 && board[r][c] === currentPlayer; r--, c--) {
         count++;
