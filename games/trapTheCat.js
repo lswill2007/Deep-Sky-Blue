@@ -32,8 +32,8 @@ function addObstacle(row, col) {
         moveCat();
     }
 }
-
-function countAdjacentObstacles(x, y) {
+/*
+function countAdjacentObstacles(x, y) { //count the number of the obstacles around the adjacent 8 blocks(abandoned)
     const directions = [
         { x: 0, y: -1 }, { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 },
         { x: 0, y: 1 }, { x: -1, y: 1 }, { x: -1, y: 0 }, { x: -1, y: -1 }
@@ -51,8 +51,8 @@ function countAdjacentObstacles(x, y) {
 
     return count;
 }
-
-function moveCat() {
+*/
+function moveCat() { //using dfs to find the way the nearest way to the border. If there's not a best route, there's no way out and the cat is trapped
     const bestMove = findBestMove(catPosition.x, catPosition.y);
     if (bestMove) {
         updateCatPosition(bestMove.x, bestMove.y);
@@ -61,13 +61,13 @@ function moveCat() {
     }
 }
 
-function findBestMove(startX, startY) {
+function findBestMove(startX, startY) {//Depth-First Search
     const directions = [
         { x: 0, y: -1 }, { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 },
         { x: 0, y: 1 }, { x: -1, y: 1 }, { x: -1, y: 0 }, { x: -1, y: -1 }
     ];
 
-    let stack = [{ x: startX, y: startY, path: [] }];
+    let stack = [{ x: startX, y: startY, path: [] }];       
     let visited = new Set();
     visited.add(`${startX},${startY}`);
 
@@ -94,7 +94,7 @@ function findBestMove(startX, startY) {
     return null;
 }
 
-function updateCatPosition(newX, newY) {
+function updateCatPosition(newX, newY) {//clear the previous cat and then draw the new one
     const cells = document.getElementsByClassName('cell');
     let oldCatCell = null;
     for (let i = 0; i < cells.length; i++) {
@@ -135,7 +135,7 @@ function resetGame() {
     blockini();
 }
 
-// Function to initialize the game with 10 random obstacles
+// Function to initialize the game with 20 random obstacles
 function blockini() {
     let addedObstacles = 0;
     while (addedObstacles < 20) {
@@ -149,7 +149,7 @@ function blockini() {
         for (let i = 0; i < cells.length; i++) {
             if (parseInt(cells[i].dataset.row) === randomRow && parseInt(cells[i].dataset.col) === randomCol) {
                 cell = cells[i];
-                break;
+                break;  
             }
         }
 
@@ -163,3 +163,14 @@ function blockini() {
 
 updateCatPosition(catPosition.x, catPosition.y);
 blockini();
+
+/*
+ooo
+o*o
+ooo
+
+
+ o o
+o * o
+ o o
+ */

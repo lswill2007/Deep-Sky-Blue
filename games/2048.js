@@ -73,7 +73,7 @@ var game = {
                 }
             }
         }
-        return true;
+        return true;//if this number is the same as its adjacent one or there's still blank 
     },
     moveLeft: function () {
         var before = String(this.data);
